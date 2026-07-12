@@ -1,0 +1,636 @@
+{
+ "version": 2,
+ "people": [
+  "Phát",
+  "Long",
+  "Ben"
+ ],
+ "months": {
+  "2026-07": {
+   "bills": []
+  },
+  "2026-06": {
+   "bills": [
+    {
+     "id": "mrgj3ffr6j9od7",
+     "date": "2026-06-15",
+     "store": "Chicken Pollo",
+     "desc": "Ăn trưa",
+     "totalM": 41000,
+     "payer": "Phát",
+     "participants": [
+      "Long"
+     ],
+     "personal": {}
+    },
+    {
+     "id": "mrgj47ta9z9zjt",
+     "date": "2026-06-11",
+     "store": "Safeway",
+     "desc": "",
+     "totalM": 141300,
+     "payer": "Phát",
+     "participants": [
+      "Phát"
+     ],
+     "personal": {}
+    },
+    {
+     "id": "mrgjbknecl7lx7",
+     "date": "2026-06-12",
+     "store": "FreshWorld",
+     "desc": "Gia vị riêng của Phát",
+     "totalM": 178900,
+     "payer": "Phát",
+     "participants": [
+      "Phát"
+     ],
+     "personal": {}
+    },
+    {
+     "id": "mrgjeup8wg2wnf",
+     "date": "2026-06-25",
+     "store": "Sushi",
+     "desc": "",
+     "totalM": 1149900,
+     "payer": "Long",
+     "participants": [
+      "Long",
+      "Ben"
+     ],
+     "personal": {}
+    },
+    {
+     "id": "mrgjgbop473qa9",
+     "date": "2026-06-26",
+     "store": "Greatwall",
+     "desc": "",
+     "totalM": 460500,
+     "payer": "Phát",
+     "participants": [
+      "Phát",
+      "Long",
+      "Ben"
+     ],
+     "personal": {
+      "Phát": "5.98"
+     }
+    },
+    {
+     "id": "mrgk3wdde1rin6",
+     "date": "2026-06-06",
+     "store": "Greatwall",
+     "desc": "",
+     "totalM": 661100,
+     "payer": "Long",
+     "participants": [
+      "Phát",
+      "Long",
+      "Ben"
+     ],
+     "personal": {
+      "Long": "7.53/2+4.99",
+      "Ben": "7.53/2"
+     }
+    },
+    {
+     "id": "mrgk6d85vzf2qb",
+     "date": "2026-06-19",
+     "store": "Eden",
+     "desc": "",
+     "totalM": 313600,
+     "payer": "Phát",
+     "participants": [
+      "Phát",
+      "Long",
+      "Ben"
+     ],
+     "personal": {
+      "Phát": "3.59+1.99"
+     }
+    },
+    {
+     "id": "mrgk70qyf3gmco",
+     "date": "2026-06-12",
+     "store": "Greatwall",
+     "desc": "",
+     "totalM": 305100,
+     "payer": "Phát",
+     "participants": [
+      "Phát",
+      "Long",
+      "Ben"
+     ],
+     "personal": {
+      "Phát": "3.98"
+     }
+    },
+    {
+     "id": "mrgk9pbu0dgf60",
+     "date": "2026-06-16",
+     "store": "Greatwall",
+     "desc": "",
+     "totalM": 110800,
+     "payer": "Phát",
+     "participants": [
+      "Phát",
+      "Long",
+      "Ben"
+     ],
+     "personal": {
+      "Phát": "3.98"
+     }
+    },
+    {
+     "id": "mrgkauy7lgxuu0",
+     "date": "2026-06-17",
+     "store": "Safeway",
+     "desc": "",
+     "totalM": 267700,
+     "payer": "Ben",
+     "participants": [
+      "Phát",
+      "Long",
+      "Ben"
+     ],
+     "personal": {}
+    },
+    {
+     "id": "mrgkc072uv2fx6",
+     "date": "2026-06-14",
+     "store": "Costco",
+     "desc": "",
+     "totalM": 1356200,
+     "payer": "Long",
+     "participants": [
+      "Phát",
+      "Long",
+      "Ben"
+     ],
+     "personal": {
+      "Phát": "9.99/2",
+      "Long": "9.99/2"
+     }
+    },
+    {
+     "id": "mrgkd3do5qcx7l",
+     "date": "2026-06-14",
+     "store": "Safeway",
+     "desc": "",
+     "totalM": 63500,
+     "payer": "Phát",
+     "participants": [
+      "Phát",
+      "Long",
+      "Ben"
+     ],
+     "personal": {}
+    },
+    {
+     "id": "mrgke10rwvy9jh",
+     "date": "2026-06-09",
+     "store": "Greatwall",
+     "desc": "",
+     "totalM": 266100,
+     "payer": "Phát",
+     "participants": [
+      "Phát",
+      "Long",
+      "Ben"
+     ],
+     "personal": {
+      "Phát": "4.82+2.99+1.99"
+     }
+    },
+    {
+     "id": "mrgkgjh2g3o0ga",
+     "date": "2026-06-02",
+     "store": "Greatwall",
+     "desc": "",
+     "totalM": 176200,
+     "payer": "Phát",
+     "participants": [
+      "Phát",
+      "Long",
+      "Ben"
+     ],
+     "personal": {
+      "Phát": "1.99+1.99+0.89+0.89"
+     }
+    },
+    {
+     "id": "mrgkifjpsca5dl",
+     "date": "2026-06-03",
+     "store": "Greatwall",
+     "desc": "",
+     "totalM": 323200,
+     "payer": "Ben",
+     "participants": [
+      "Phát",
+      "Long",
+      "Ben"
+     ],
+     "personal": {}
+    },
+    {
+     "id": "mrgkjx3slhk1l8",
+     "date": "2026-06-06",
+     "store": "Costco",
+     "desc": "",
+     "totalM": 1347600,
+     "payer": "Long",
+     "participants": [
+      "Phát",
+      "Long",
+      "Ben"
+     ],
+     "personal": {
+      "Phát": "13.49/2",
+      "Long": "13.49/2"
+     }
+    },
+    {
+     "id": "mrgkln8kwex0ja",
+     "date": "2026-06-30",
+     "store": "Greatwall",
+     "desc": "",
+     "totalM": 195100,
+     "payer": "Phát",
+     "participants": [
+      "Phát",
+      "Long",
+      "Ben"
+     ],
+     "personal": {
+      "Phát": "0.89+0.89+1.79+0.79+4.99"
+     }
+    },
+    {
+     "id": "mrgkmr1kt1c3wb",
+     "date": "2026-06-28",
+     "store": "Eden",
+     "desc": "",
+     "totalM": 111300,
+     "payer": "Phát",
+     "participants": [
+      "Phát",
+      "Long",
+      "Ben"
+     ],
+     "personal": {}
+    },
+    {
+     "id": "mrgkogm7jtwo7g",
+     "date": "2026-06-28",
+     "store": "Costco",
+     "desc": "",
+     "totalM": 860000,
+     "payer": "Long",
+     "participants": [
+      "Phát",
+      "Long",
+      "Ben"
+     ],
+     "personal": {
+      "Phát": "6.99"
+     }
+    },
+    {
+     "id": "mrgl09jbgkv8ql",
+     "date": "2026-06-13",
+     "store": "Phở",
+     "desc": "Nấu phở ở nhà",
+     "totalM": 600000,
+     "payer": "Long",
+     "participants": [
+      "Phát",
+      "Long",
+      "Ben"
+     ],
+     "personal": {}
+    },
+    {
+     "id": "mrgl2qbho5m8ay",
+     "date": "2026-06-13",
+     "store": "Greatwall",
+     "desc": "",
+     "totalM": 142700,
+     "payer": "Phát",
+     "participants": [
+      "Phát",
+      "Long"
+     ],
+     "personal": {
+      "Phát": "4.88+1.29+(7.96/2)",
+      "Long": "7.96/2"
+     }
+    },
+    {
+     "id": "mrgm6o80xbxlpi",
+     "date": "2026-06-07",
+     "store": "Phở Hello Vietnam",
+     "desc": "Rockville",
+     "totalM": 444800,
+     "payer": "Long",
+     "participants": [
+      "Phát",
+      "Long"
+     ],
+     "personal": {}
+    },
+    {
+     "id": "mrgm98valsv6j5",
+     "date": "2026-06-21",
+     "store": "Dock Street",
+     "desc": "Annapolis",
+     "totalM": 402600,
+     "payer": "Long",
+     "participants": [
+      "Phát",
+      "Long"
+     ],
+     "personal": {}
+    },
+    {
+     "id": "mrgmasd1tnamb4",
+     "date": "2026-06-10",
+     "store": "Điện ⚡️",
+     "desc": "Điện tháng 5 (đầu-cuối tháng 5)",
+     "totalM": 1776800,
+     "payer": "Long",
+     "participants": [
+      "Phát",
+      "Long",
+      "Ben"
+     ],
+     "personal": {}
+    },
+    {
+     "id": "mrgmc4j0en5dym",
+     "date": "2026-06-30",
+     "store": "Wifi",
+     "desc": "Tháng 6",
+     "totalM": 750000,
+     "payer": "Long",
+     "participants": [
+      "Phát",
+      "Long",
+      "Ben"
+     ],
+     "personal": {}
+    },
+    {
+     "id": "mrgmf2csy7zkb3",
+     "date": "2026-07-03",
+     "store": "Cơm heo quay",
+     "desc": "NYC",
+     "totalM": 220000,
+     "payer": "Phát",
+     "participants": [
+      "Phát",
+      "Long"
+     ],
+     "personal": {}
+    },
+    {
+     "id": "mrgmfmqoisvome",
+     "date": "2026-07-03",
+     "store": "Con thỏ xanh",
+     "desc": "NYC",
+     "totalM": 934800,
+     "payer": "Long",
+     "participants": [
+      "Phát",
+      "Long"
+     ],
+     "personal": {
+      "Phát": "40",
+      "Long": "93.48-40"
+     }
+    },
+    {
+     "id": "mrgmgbz8hiqb6i",
+     "date": "2026-07-06",
+     "store": "McDonald",
+     "desc": "Ăn trưa",
+     "totalM": 188700,
+     "payer": "Phát",
+     "participants": [
+      "Phát",
+      "Long"
+     ],
+     "personal": {}
+    },
+    {
+     "id": "mrgmkxelex8xts",
+     "date": "2026-06-27",
+     "store": "Pad Thai",
+     "desc": "Ăn trưa",
+     "totalM": 186500,
+     "payer": "Phát",
+     "participants": [
+      "Long"
+     ],
+     "personal": {}
+    },
+    {
+     "id": "mrgmlukgbn16sf",
+     "date": "2026-06-28",
+     "store": "Long nạp game",
+     "desc": "Tháng 5",
+     "totalM": 100000,
+     "payer": "Phát",
+     "participants": [
+      "Long"
+     ],
+     "personal": {}
+    },
+    {
+     "id": "mrgmnykwa1ts48",
+     "date": "2026-07-01",
+     "store": "Sữa bắp",
+     "desc": "",
+     "totalM": 290000,
+     "payer": "Phát",
+     "participants": [
+      "Phát",
+      "Long"
+     ],
+     "personal": {
+      "Phát": "6",
+      "Long": "23"
+     }
+    },
+    {
+     "id": "mrgmqlvmmvol2b",
+     "date": "2026-07-03",
+     "store": "EZpass",
+     "desc": "NYC",
+     "totalM": 500000,
+     "payer": "Long",
+     "participants": [
+      "Phát",
+      "Long"
+     ],
+     "personal": {}
+    },
+    {
+     "id": "mrgmqwnhdqaibt",
+     "date": "2026-07-02",
+     "store": "Xăng Safeway",
+     "desc": "NYC",
+     "totalM": 474700,
+     "payer": "Long",
+     "participants": [
+      "Phát",
+      "Long"
+     ],
+     "personal": {}
+    },
+    {
+     "id": "mrgmrfmqb77tby",
+     "date": "2026-07-02",
+     "store": "Thuê xe",
+     "desc": "NYC",
+     "totalM": 2015000,
+     "payer": "Phát",
+     "participants": [
+      "Phát",
+      "Long"
+     ],
+     "personal": {}
+    },
+    {
+     "id": "mrgnarhg9raoyg",
+     "date": "2026-07-03",
+     "store": "Nước suối",
+     "desc": "NYC",
+     "totalM": 46000,
+     "payer": "Long",
+     "participants": [
+      "Phát",
+      "Long"
+     ],
+     "personal": {}
+    },
+    {
+     "id": "mrgnf7j36n72a9",
+     "date": "2026-07-03",
+     "store": "Chicha San Chen",
+     "desc": "NYC",
+     "totalM": 234100,
+     "payer": "Long",
+     "participants": [
+      "Phát",
+      "Long"
+     ],
+     "personal": {}
+    },
+    {
+     "id": "mrgng6mxnq53ve",
+     "date": "2026-07-03",
+     "store": "Xăng NJ",
+     "desc": "NYC",
+     "totalM": 250000,
+     "payer": "Long",
+     "participants": [
+      "Phát",
+      "Long"
+     ],
+     "personal": {}
+    },
+    {
+     "id": "mrgnk1wbqcisxl",
+     "date": "2026-07-03",
+     "store": "Phở Hoàng",
+     "desc": "NYC",
+     "totalM": 354000,
+     "payer": "Phát",
+     "participants": [
+      "Phát",
+      "Long"
+     ],
+     "personal": {}
+    },
+    {
+     "id": "mrgnkaimohzosx",
+     "date": "2026-07-03",
+     "store": "Nước mía",
+     "desc": "NYC",
+     "totalM": 80000,
+     "payer": "Phát",
+     "participants": [
+      "Phát",
+      "Long"
+     ],
+     "personal": {}
+    },
+    {
+     "id": "mrgnkldk8h58p3",
+     "date": "2026-07-03",
+     "store": "Xingfutang",
+     "desc": "NYC",
+     "totalM": 125100,
+     "payer": "Phát",
+     "participants": [
+      "Phát",
+      "Long"
+     ],
+     "personal": {}
+    },
+    {
+     "id": "mrgnnr2v5p5ydj",
+     "date": "2026-07-10",
+     "store": "Greatwall",
+     "desc": "Lẩu ở nhà, không chia đều",
+     "totalM": 757900,
+     "payer": "Phát",
+     "participants": [
+      "Phát",
+      "Long",
+      "Ben"
+     ],
+     "personal": {
+      "Phát": "75.79-15-15",
+      "Long": "15",
+      "Ben": "15"
+     }
+    },
+    {
+     "id": "mrgnqjl69evs84",
+     "date": "2026-07-03",
+     "store": "Xăng",
+     "desc": "NYC",
+     "totalM": 50000,
+     "payer": "Phát",
+     "participants": [
+      "Phát",
+      "Long"
+     ],
+     "personal": {}
+    },
+    {
+     "id": "mrh76dxduftj8s",
+     "date": "2026-07-09",
+     "store": "Costco",
+     "desc": "Trước ngày ăn lẩu",
+     "totalM": 1550500,
+     "payer": "Long",
+     "participants": [
+      "Phát",
+      "Long",
+      "Ben"
+     ],
+     "personal": {}
+    }
+   ]
+  }
+ },
+ "currentMonth": "2026-06",
+ "settings": {
+  "apiKey": "",
+  "model": "claude-opus-4-8",
+  "symbol": "$",
+  "lastBackup": 1783792067927
+ }
+}
