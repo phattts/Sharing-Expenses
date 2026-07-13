@@ -129,6 +129,7 @@
     <div class="right no-print">
       <button id="btnPrint" class="primary">🖨️ In / PDF</button>
       <button id="btnExport" class="primary">💾 Sao lưu</button>
+      <button id="btnSync" style="display:none" title="Đồng bộ với các máy khác ngay">🔄 Đồng bộ</button>
       <button id="btnImport">📂 Khôi phục</button>
       <button id="btnScan">🤖 Scan AI</button>
       <button id="btnSettings" title="Cài đặt">⚙️</button>
@@ -201,7 +202,8 @@
 
   <div class="muted no-print" style="text-align:center">
     Dữ liệu tự lưu trên máy (trình duyệt này). Nhớ bấm “💾 Sao lưu” định kỳ để giữ file dự phòng.
-    <span id="lastBackup"></span>
+    <span id="lastBackup"></span><br>
+    <span id="syncStatus"></span>
   </div>
 </div>
 
@@ -233,6 +235,42 @@
       <label>Ký hiệu tiền tệ</label>
       <input type="text" id="setSymbol" maxlength="4">
     </div>
+    <hr style="border:none;border-top:1px solid var(--line);margin:16px 0">
+    <h2>Đồng bộ nhiều máy (GitHub Gist)</h2>
+    <p class="muted" style="margin-top:0">
+      Dữ liệu chung được lưu trong một <b>Gist bí mật</b> trên GitHub.
+      Mỗi máy (bạn và bạn cùng nhà) dán <b>cùng một Token + Gist ID</b> vào đây một lần —
+      sau đó ai nhập gì, máy kia tự thấy. Token/API key chỉ nằm trên từng máy, không bao giờ bị đồng bộ.
+    </p>
+    <div class="field" style="margin-bottom:10px">
+      <label>GitHub token (loại "classic", chỉ tick quyền <b>gist</b>) —
+        <a href="https://github.com/settings/tokens/new?scopes=gist&description=chia-tien-nha" target="_blank" rel="noopener">bấm vào đây để tạo</a></label>
+      <div style="display:flex;gap:8px">
+        <input type="password" id="setGistToken" style="flex:1" placeholder="ghp_…">
+        <button id="btnShowGT" type="button">👁</button>
+      </div>
+    </div>
+    <div class="field" style="margin-bottom:10px">
+      <label>Gist ID</label>
+      <div style="display:flex;gap:8px">
+        <input type="text" id="setGistId" style="flex:1" placeholder="dán ID có sẵn, hoặc bấm Tạo mới →">
+        <button id="btnGistCreate" type="button" title="Tạo Gist bí mật mới bằng token ở trên">➕ Tạo mới</button>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px">
+      <button id="btnSyncTest" type="button">🔌 Kiểm tra kết nối</button>
+      <span class="muted" id="syncTestMsg"></span>
+    </div>
+    <details class="muted">
+      <summary style="cursor:pointer">Hướng dẫn cho cả nhà (bấm để xem)</summary>
+      <ol style="margin:8px 0 0 18px;padding:0">
+        <li><b>Chủ nhà (làm 1 lần):</b> bấm link tạo token ở trên (Expiration chọn <i>No expiration</i>, chỉ tick <b>gist</b>) → dán token vào ô → bấm <b>➕ Tạo mới</b> để có Gist ID → bấm <b>Lưu cài đặt</b>.</li>
+        <li>Gửi riêng cho bạn cùng nhà đúng 2 thứ: <b>Token</b> và <b>Gist ID</b> (nhắn tin riêng, đừng đăng công khai).</li>
+        <li><b>Bạn cùng nhà:</b> mở trang web → ⚙️ → dán Token + Gist ID → Lưu cài đặt. Xong.</li>
+      </ol>
+      <div style="margin-top:6px">⚠ Token này cho phép đọc/ghi <b>mọi Gist</b> của tài khoản tạo nó — chỉ đưa cho người tin tưởng,
+      hoặc tạo một tài khoản GitHub mới riêng cho việc này. Nếu lỡ lộ: vào GitHub → Settings → Tokens → Delete là vô hiệu ngay.</div>
+    </details>
     <hr style="border:none;border-top:1px solid var(--line);margin:16px 0">
     <h2>Dữ liệu</h2>
     <button id="btnWipe" class="danger">🗑 Xoá toàn bộ dữ liệu</button>
@@ -330,15 +368,22 @@ function defaultState(){
   return {
     version: 2,
     people: ["Phát","Long","Ben"],
+    peopleMt: 0,
     months: { [mk]: { bills: [] } },
     currentMonth: mk,
-    settings: { apiKey:"", model:"claude-opus-4-8", symbol:"$", lastBackup:null }
+    settings: { apiKey:"", model:"claude-opus-4-8", symbol:"$", lastBackup:null,
+                gistId:"", gistToken:"", lastSync:null }
   };
 }
 function load(){
   try{
     const raw = localStorage.getItem(LS_KEY);
-    if (raw){ state = JSON.parse(raw); if(!state.months || !state.people) throw 0; return; }
+    if (raw){
+      state = JSON.parse(raw);
+      if(!state.months || !state.people) throw 0;
+      state.settings = Object.assign(defaultState().settings, state.settings||{});
+      return;
+    }
   }catch(e){ console.warn("state hỏng, tạo mới", e); }
   state = defaultState();
 }
@@ -621,6 +666,7 @@ function renderAll(){
   renderTable();
   renderSummary();
   $("lastBackup").textContent = state.settings.lastBackup ? (" Lần sao lưu gần nhất: " + new Date(state.settings.lastBackup).toLocaleDateString("vi-VN") + ".") : " Bạn chưa sao lưu lần nào.";
+  $("btnSync").style.display = syncConfigured() ? "" : "none";
 }
 
 // ---------- thao tác bill ----------
@@ -658,13 +704,13 @@ function saveBill(){
   const month = curMonth();
   if (editingId){
     const b = month.bills.find(x=>x.id===editingId);
-    Object.assign(b, { date:f.date, store:f.store, desc:f.desc, totalM:f.totalM, payer:f.payer, participants:f.participants, personal:f.personal });
+    Object.assign(b, { date:f.date, store:f.store, desc:f.desc, totalM:f.totalM, payer:f.payer, participants:f.participants, personal:f.personal, mt: Date.now() });
     toast("Đã cập nhật hoá đơn");
   } else {
-    month.bills.push({ id: uid(), date:f.date, store:f.store, desc:f.desc, totalM:f.totalM, payer:f.payer, participants:f.participants, personal:f.personal });
+    month.bills.push({ id: uid(), date:f.date, store:f.store, desc:f.desc, totalM:f.totalM, payer:f.payer, participants:f.participants, personal:f.personal, mt: Date.now() });
     toast("Đã thêm: " + f.store + " — " + fmtM(f.totalM));
   }
-  save();
+  save(); scheduleSync();
   const keepDate = $("fDate").value, keepPayer = f.payer;
   resetForm();
   $("fDate").value = keepDate;
@@ -681,19 +727,23 @@ function delBill(id){
   if (!b) return;
   if (!confirm(`Xoá hoá đơn "${b.store}" (${fmtM(b.totalM)})?`)) return;
   curMonth().bills = curMonth().bills.filter(x=>x.id!==id);
+  (curMonth().del ||= {})[id] = Date.now(); // "bia mộ" để đồng bộ: máy khác biết bill này đã xoá
   if (editingId===id) resetForm();
-  save(); renderAll(); toast("Đã xoá");
+  save(); scheduleSync(); renderAll(); toast("Đã xoá");
 }
 function dupBill(id){
   const b = curMonth().bills.find(x=>x.id===id);
   if (!b) return;
-  curMonth().bills.push({ ...JSON.parse(JSON.stringify(b)), id: uid() });
-  save(); renderAll(); toast("Đã nhân bản — nhớ sửa lại ngày/số tiền");
+  curMonth().bills.push({ ...JSON.parse(JSON.stringify(b)), id: uid(), mt: Date.now() });
+  save(); scheduleSync(); renderAll(); toast("Đã nhân bản — nhớ sửa lại ngày/số tiền");
 }
 
 // ---------- backup ----------
 function doExport(){
-  const blob = new Blob([JSON.stringify(state, null, 1)], {type:"application/json"});
+  // file sao lưu KHÔNG chứa API key / token (tránh lộ khi gửi file cho người khác)
+  const copy = JSON.parse(JSON.stringify(state));
+  copy.settings.apiKey = ""; copy.settings.gistToken = "";
+  const blob = new Blob([JSON.stringify(copy, null, 1)], {type:"application/json"});
   const a = document.createElement("a");
   a.href = URL.createObjectURL(blob);
   a.download = "chia-tien-nha-" + new Date().toISOString().slice(0,10) + ".json";
@@ -710,10 +760,14 @@ function doImport(file){
       const s = JSON.parse(rd.result);
       if (!s.months || !s.people) throw new Error("file không đúng định dạng");
       if (!confirm("Khôi phục sẽ THAY THẾ toàn bộ dữ liệu hiện tại bằng dữ liệu trong file. Tiếp tục?")) return;
+      const keep = { apiKey: state.settings.apiKey, gistToken: state.settings.gistToken, gistId: state.settings.gistId };
       s.settings = Object.assign(defaultState().settings, s.settings||{});
+      if (!s.settings.apiKey) s.settings.apiKey = keep.apiKey;         // file backup không chứa key
+      if (!s.settings.gistToken) s.settings.gistToken = keep.gistToken; // → giữ key đang dùng trên máy
+      if (!s.settings.gistId) s.settings.gistId = keep.gistId;
       state = s;
       if (!state.months[state.currentMonth]) state.currentMonth = Object.keys(state.months).sort().pop();
-      save(); resetForm(); renderAll(); toast("Đã khôi phục dữ liệu");
+      save(); scheduleSync(); resetForm(); renderAll(); toast("Đã khôi phục dữ liệu");
     }catch(e){ alert("Không đọc được file: " + e.message); }
   };
   rd.readAsText(file);
@@ -954,8 +1008,8 @@ function addScanned(){
   });
   if (bad.length){ alert("Sửa các mục sau trước khi thêm:\n" + bad.join("\n")); return; }
   const month = curMonth();
-  for (const b of items) month.bills.push({ id: uid(), ...b });
-  save(); renderAll();
+  for (const b of items) month.bills.push({ id: uid(), ...b, mt: Date.now() });
+  save(); scheduleSync(); renderAll();
   dlgScan.close();
   toast(`Đã thêm ${items.length} hoá đơn từ AI scan ✓ — nhớ đối chiếu lại với hoá đơn gốc`);
 }
@@ -965,6 +1019,9 @@ function renderSettings(){
   $("setKey").value = state.settings.apiKey || "";
   $("setModel").value = state.settings.model || "claude-opus-4-8";
   $("setSymbol").value = state.settings.symbol || "$";
+  $("setGistToken").value = state.settings.gistToken || "";
+  $("setGistId").value = state.settings.gistId || "";
+  $("syncTestMsg").textContent = "";
   const box = $("peopleList");
   box.innerHTML = state.people.map((p,i)=>
     `<div class="people-row"><input type="text" data-i="${i}" value="${escapeHtml(p)}" style="width:180px"> <button data-del="${i}" class="danger" title="Xoá người này">✕</button></div>`
@@ -977,11 +1034,12 @@ function renderSettings(){
       const used = Object.values(state.months).some(m=>m.bills.some(x=>x.payer===name || (x.participants||[]).includes(name) || (x.personal||{})[name]));
       if (used && !confirm(`"${name}" đang có dữ liệu trong các hoá đơn. Xoá sẽ gỡ tên này khỏi mọi hoá đơn (các bill do "${name}" trả sẽ báo lỗi để bạn sửa lại). Tiếp tục?`)) return;
       state.people.splice(i,1);
+      state.peopleMt = Date.now();
       for (const m of Object.values(state.months)) for (const bl of m.bills){
         bl.participants = (bl.participants||[]).filter(x=>x!==name);
         if (bl.personal) delete bl.personal[name];
       }
-      save(); renderSettings(); resetForm(); renderAll();
+      save(); scheduleSync(); renderSettings(); resetForm(); renderAll();
     };
   });
 }
@@ -990,9 +1048,11 @@ function saveSettings(){
   const newNames = inputs.map(i=>i.value.trim());
   if (newNames.some(n=>!n)){ alert("Tên không được để trống."); return; }
   if (new Set(newNames.map(n=>n.toLowerCase())).size !== newNames.length){ alert("Tên bị trùng."); return; }
+  let renamed = false;
   newNames.forEach((nn,i)=>{
     const old = state.people[i];
     if (old !== nn){
+      renamed = true;
       for (const m of Object.values(state.months)) for (const b of m.bills){
         if (b.payer===old) b.payer=nn;
         b.participants = (b.participants||[]).map(x=>x===old?nn:x);
@@ -1001,10 +1061,14 @@ function saveSettings(){
       state.people[i]=nn;
     }
   });
+  if (renamed) state.peopleMt = Date.now();
   state.settings.apiKey = $("setKey").value.trim();
   state.settings.model = $("setModel").value;
   state.settings.symbol = $("setSymbol").value || "$";
+  state.settings.gistToken = $("setGistToken").value.trim();
+  state.settings.gistId = $("setGistId").value.trim();
   save(); dlgSettings.close(); resetForm(); renderAll(); toast("Đã lưu cài đặt");
+  if (syncConfigured()) syncNow(false); // vừa cấu hình xong / có đổi tên → đồng bộ luôn
 }
 
 // ---------- toast ----------
@@ -1012,6 +1076,123 @@ let toastTimer = null;
 function toast(msg){
   const t = $("toast"); t.textContent = msg; t.classList.add("show");
   clearTimeout(toastTimer); toastTimer = setTimeout(()=>t.classList.remove("show"), 2600);
+}
+
+/* ---------- Đồng bộ nhiều máy qua GitHub Gist ----------
+   Dữ liệu chung (people + months) lưu trong 1 Gist bí mật. Mỗi máy pull về,
+   TRỘN với dữ liệu local rồi push lại:
+   - mỗi bill có mốc sửa `mt` → ai sửa sau người đó thắng (theo từng bill);
+   - xoá bill để lại "bia mộ" trong month.del → bill đã xoá không "hồi sinh"
+     khi trộn với máy chưa biết tin xoá;
+   - API key / token KHÔNG BAO GIỜ được gửi lên Gist. */
+const GIST_FILE = "chia-tien-data.json";
+let syncTimer = null, syncing = false, syncQueued = false, lastPullAt = 0;
+
+function syncConfigured(){ return !!(state.settings.gistId && state.settings.gistToken); }
+function setSyncStatus(msg){ const el = $("syncStatus"); if (el) el.textContent = msg; }
+
+// phần dữ liệu đem đồng bộ (không kèm settings)
+function coreOf(st){ return { peopleMt: st.peopleMt||0, people: st.people, months: st.months }; }
+
+// chuỗi chuẩn hoá để so sánh 2 bản dữ liệu (sắp xếp key/bill cố định)
+function canonCore(core){
+  const nb = b => ({ id:b.id, date:b.date||"", store:b.store||"", desc:b.desc||"", totalM:b.totalM|0,
+    payer:b.payer||"", participants:(b.participants||[]).slice(),
+    personal:Object.fromEntries(Object.entries(b.personal||{}).sort()), mt:b.mt||0 });
+  const months = {};
+  for (const k of Object.keys(core.months||{}).sort()){
+    const m = core.months[k]||{};
+    months[k] = { bills:(m.bills||[]).map(nb).sort((a,b)=>a.id<b.id?-1:a.id>b.id?1:0),
+                  del:Object.fromEntries(Object.entries(m.del||{}).sort()) };
+  }
+  return JSON.stringify({ peopleMt:core.peopleMt||0, people:core.people, months });
+}
+
+// trộn dữ liệu local (L) và remote (R) — không mất dữ liệu của bên nào
+function mergeCore(L, R){
+  const usePeople = (R.peopleMt||0) > (L.peopleMt||0) ? R : L;
+  const months = {};
+  for (const k of new Set([...Object.keys(L.months||{}), ...Object.keys(R.months||{})])){
+    const lm = (L.months||{})[k] || {}, rm = (R.months||{})[k] || {};
+    const byId = {};
+    for (const b of (lm.bills||[])) byId[b.id] = b;
+    for (const b of (rm.bills||[])){
+      const cur = byId[b.id];
+      if (!cur || (b.mt||0) > (cur.mt||0)) byId[b.id] = b; // sửa sau thắng
+    }
+    const del = {};
+    for (const [id,t] of [...Object.entries(lm.del||{}), ...Object.entries(rm.del||{})])
+      del[id] = Math.max(del[id]||0, +t||0);
+    for (const [id,t] of Object.entries(del))
+      if (byId[id] && (byId[id].mt||0) <= t) delete byId[id]; // xoá thắng bản cũ hơn
+    const cutoff = Date.now() - 90*86400000; // dọn bia mộ > 90 ngày
+    for (const id of Object.keys(del)) if (del[id] < cutoff) delete del[id];
+    months[k] = { bills: Object.values(byId), del };
+  }
+  return { peopleMt: usePeople.peopleMt||0, people: usePeople.people.slice(), months };
+}
+
+async function gistApi(method, body, cfg){
+  const id = String(cfg?.id ?? state.settings.gistId).trim();
+  const token = String(cfg?.token ?? state.settings.gistToken).trim();
+  const url = "https://api.github.com/gists" + (method === "POST" ? "" : "/" + encodeURIComponent(id));
+  const r = await fetch(url, {
+    method,
+    headers: { "Authorization": "Bearer " + token, "Accept": "application/vnd.github+json" },
+    body: body ? JSON.stringify(body) : undefined
+  });
+  if (r.status === 401) throw new Error("token sai hoặc hết hạn (401)");
+  if (r.status === 404) throw new Error("không tìm thấy Gist — kiểm tra Gist ID (404)");
+  if (r.status === 403 || r.status === 429) throw new Error("GitHub tạm giới hạn (" + r.status + ") — thử lại sau ít phút");
+  if (!r.ok) throw new Error("GitHub trả lỗi " + r.status);
+  return r.json();
+}
+async function gistRead(cfg){
+  const g = await gistApi("GET", null, cfg);
+  const f = g.files && g.files[GIST_FILE];
+  if (!f) return null;
+  let text = f.content;
+  if (f.truncated && f.raw_url) text = await (await fetch(f.raw_url)).text();
+  try{ const d = JSON.parse(text); return (d && d.months) ? d : null; }catch(e){ return null; }
+}
+async function gistWrite(payload, cfg){
+  await gistApi("PATCH", { files: { [GIST_FILE]: { content: JSON.stringify(payload) } } }, cfg);
+}
+
+async function syncNow(manual){
+  if (!syncConfigured()){ if (manual) toast("Chưa cấu hình đồng bộ — mở ⚙️ Cài đặt"); return; }
+  if (syncing){ syncQueued = true; return; }
+  syncing = true; lastPullAt = Date.now();
+  const btn = $("btnSync"); if (btn) btn.disabled = true;
+  setSyncStatus("⏳ Đang đồng bộ…");
+  try{
+    const remote = await gistRead();
+    const L = coreOf(state);
+    const merged = remote ? mergeCore(L, remote) : L;
+    const cM = canonCore(merged), cL = canonCore(L), cR = remote ? canonCore(remote) : null;
+    if (cM !== cL){ // có dữ liệu mới từ máy khác
+      state.people = merged.people; state.peopleMt = merged.peopleMt; state.months = merged.months;
+      if (!state.months[state.currentMonth]) state.currentMonth = Object.keys(state.months).sort().pop();
+      if (editingId && !curMonth().bills.some(b=>b.id===editingId)) resetForm();
+      save(); renderAll();
+      toast("⬇ Đã nhận dữ liệu mới từ máy khác");
+    }
+    if (cM !== cR) await gistWrite({ v:1, pushedAt: Date.now(), ...merged }); // đẩy phần local mới lên
+    state.settings.lastSync = Date.now(); save();
+    setSyncStatus("🔄 Đồng bộ lần cuối: " + new Date().toLocaleTimeString("vi-VN",{hour:"2-digit",minute:"2-digit"}));
+  }catch(e){
+    setSyncStatus("⚠ Đồng bộ lỗi: " + e.message);
+    if (manual) toast("Đồng bộ lỗi: " + e.message);
+  }finally{
+    syncing = false; if (btn) btn.disabled = false;
+    if (syncQueued){ syncQueued = false; scheduleSync(1200); }
+  }
+}
+// gọi sau mỗi thay đổi dữ liệu — gom nhiều thay đổi liên tiếp thành 1 lần đồng bộ
+function scheduleSync(delay){
+  if (!syncConfigured()) return;
+  clearTimeout(syncTimer);
+  syncTimer = setTimeout(()=>syncNow(false), delay ?? 2500);
 }
 
 // ---------- gợi ý tên bill (gõ "cos" → "Costco", bấm Tab để xác nhận) ----------
@@ -1117,7 +1298,7 @@ function init(){
     const mk = v.trim();
     if (!state.months[mk]) state.months[mk] = { bills: [] };
     state.currentMonth = mk;
-    save(); resetForm(); renderAll();
+    save(); scheduleSync(); resetForm(); renderAll();
   };
   $("btnSave").onclick = saveBill;
   $("btnCancelEdit").onclick = ()=>{ resetForm(); renderTable(); };
@@ -1135,8 +1316,41 @@ function init(){
     const n = prompt("Tên thành viên mới:"); if (!n||!n.trim()) return;
     if (state.people.some(p=>p.toLowerCase()===n.trim().toLowerCase())){ alert("Tên đã tồn tại."); return; }
     if (state.people.length>=8){ alert("Tối đa 8 người."); return; }
-    state.people.push(n.trim()); save(); renderSettings(); resetForm(); renderAll();
+    state.people.push(n.trim()); state.peopleMt = Date.now();
+    save(); scheduleSync(); renderSettings(); resetForm(); renderAll();
   };
+  $("btnShowGT").onclick = ()=>{ const k=$("setGistToken"); k.type = k.type==="password"?"text":"password"; };
+  $("btnGistCreate").onclick = async ()=>{
+    const token = $("setGistToken").value.trim();
+    if (!token){ $("syncTestMsg").textContent = "Dán token vào ô trên trước đã."; return; }
+    $("btnGistCreate").disabled = true; $("syncTestMsg").textContent = "Đang tạo Gist…";
+    try{
+      const r = await fetch("https://api.github.com/gists", {
+        method: "POST",
+        headers: { "Authorization":"Bearer "+token, "Accept":"application/vnd.github+json" },
+        body: JSON.stringify({ description: "Chia tiền nhà — dữ liệu đồng bộ", public: false,
+                               files: { [GIST_FILE]: { content: "{}" } } })
+      });
+      if (!r.ok) throw new Error(r.status===401 ? "token sai hoặc thiếu quyền gist (401)" : "GitHub trả lỗi " + r.status);
+      const g = await r.json();
+      $("setGistId").value = g.id;
+      $("syncTestMsg").textContent = "✓ Đã tạo Gist bí mật — bấm Lưu cài đặt để bắt đầu đồng bộ.";
+    }catch(e){ $("syncTestMsg").textContent = "⚠ " + e.message; }
+    finally{ $("btnGistCreate").disabled = false; }
+  };
+  $("btnSyncTest").onclick = async ()=>{
+    const cfg = { id: $("setGistId").value, token: $("setGistToken").value };
+    if (!cfg.id.trim() || !cfg.token.trim()){ $("syncTestMsg").textContent = "Điền cả Token và Gist ID trước."; return; }
+    $("syncTestMsg").textContent = "Đang kiểm tra…";
+    try{
+      const d = await gistRead(cfg);
+      $("syncTestMsg").textContent = d ? "✓ Kết nối OK — Gist đã có dữ liệu chung." : "✓ Kết nối OK — Gist còn trống, sẽ có dữ liệu sau lần đồng bộ đầu.";
+    }catch(e){ $("syncTestMsg").textContent = "⚠ " + e.message; }
+  };
+  $("btnSync").onclick = ()=>syncNow(true);
+  // quay lại tab → tự kéo dữ liệu mới của máy khác (tối đa 1 lần/phút)
+  window.addEventListener("focus", ()=>{ if (syncConfigured() && Date.now()-lastPullAt > 60000) syncNow(false); });
+  if (syncConfigured()) syncNow(false);
   $("btnShowKey").onclick = ()=>{ const k=$("setKey"); k.type = k.type==="password"?"text":"password"; };
   $("btnWipe").onclick = ()=>{
     if (!confirm("Xoá TOÀN BỘ dữ liệu (mọi tháng, mọi hoá đơn, cài đặt)? Không thể hoàn tác.")) return;
@@ -1164,7 +1378,8 @@ document.addEventListener("DOMContentLoaded", init);
 window.__ctn = {
   getState: ()=>state,
   setState: (s)=>{ state = s; save(); resetForm(); renderAll(); },
-  computeBill, computeSummary, settlements, evalMoney, roundHalf, fmtM, trimNum
+  computeBill, computeSummary, settlements, evalMoney, roundHalf, fmtM, trimNum,
+  mergeCore, canonCore, coreOf, syncNow
 };
 </script>
 </body>
